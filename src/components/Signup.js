@@ -6,6 +6,7 @@ import * as Yup from 'yup'
 import { Formik } from 'formik';
 
 const Signup = ({ setIsAUth }) => {
+  const [errors, setErrors] = useState([]);
 
   const navigate = useNavigate();
 
@@ -24,21 +25,17 @@ const Signup = ({ setIsAUth }) => {
   const handleSubmit = async (values) => {
     const { email, password, username } = values;
 
-    try {
-      await AuthService.signup(email, username, password).then(
-        (response) => {
-          // check for token and user already exists with 200
-          //   console.log("Sign up successfully", response);
-          setIsAUth(true);
-          navigate("/home");
-          window.location.reload();
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-    } catch (err) {
-      console.log(err);
+    const response = await AuthService.signup(email, username, password);
+    const json = await response.text();
+    const data = JSON.parse(json);
+
+    if (response.status !== 201) {
+      setErrors(data);
+    } else {
+      setIsAUth(true);
+      localStorage.setItem("user", JSON.stringify(data));
+      navigate("/home");
+      window.location.reload();
     }
   };
 
@@ -93,8 +90,7 @@ const Signup = ({ setIsAUth }) => {
           </Form>
         )}
       </Formik>
-      {/* {errors.general && (<p className='text-danger text-end'>{errors.general}</p>)} */}
-
+      {errors.email && (<p className='text-danger text-end'>{errors.email}</p>)}
     </div>
   );
 };

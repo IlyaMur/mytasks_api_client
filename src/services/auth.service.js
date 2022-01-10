@@ -2,21 +2,36 @@ import axios from "axios";
 
 const API_URL = "http://api.test/api";
 
-const signup = (email, username, password) => {
-  console.log(email, username, password);
-  return axios
-    .post(API_URL + "/signup", {
-      email,
-      username,
-      password
-    })
-    .then((response) => {
-      if (response.data.accessToken) {
-        localStorage.setItem("user", JSON.stringify(response.data));
-      }
+// const signup = (email, username, password) => {
+//   console.log(email, username, password);
+//   return axios
+//     .post(API_URL + "/signup", {
+//       email,
+//       username,
+//       password
+//     })
+//     .then((response) => {
+//       if (response.data.accessToken) {
+//         localStorage.setItem("user", JSON.stringify(response.data));
+//       }
 
-      return response.data;
-    });
+//       return response.data;
+//     });
+// }; 
+
+const signup = async (email, username, password) => {
+  const response = await fetch(API_URL + "/signup", {
+    method: 'POST',
+    body: JSON.stringify({
+      email: email,
+      password: password,
+      username: username
+    }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  return response;
 };
 
 // const login = (email, password) => {
