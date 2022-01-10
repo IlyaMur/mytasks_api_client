@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Row, Col, Form, Button, Modal, Badge } from 'react-bootstrap'
 
-const Todo = ({ id, title, description, completed, completeTodo, unCompleteTodo, editTodo, deleteTodo, errors, setErrors }) => {
+const Task = ({ id, title, description, completed, changeTaskState, editTask, deleteTask }) => {
 	const [show, setShow] = useState(false);
 
 	const [newTitle, setTitle] = useState(title)
@@ -15,16 +15,16 @@ const Todo = ({ id, title, description, completed, completeTodo, unCompleteTodo,
 
 	const handleShow = () => setShow(true);
 
-	const editTodoHandler = (title, body) => {
+	const editTaskHandler = (title, body) => {
 		handleClose();
-		const todo = {
+		const task = {
 			id,
 			title,
 			body,
 		}
 
 		if (title !== '' && body !== '') {
-			editTodo(todo)
+			editTask(task)
 			setTitle(title)
 			setBody(body)
 		}
@@ -46,14 +46,14 @@ const Todo = ({ id, title, description, completed, completeTodo, unCompleteTodo,
 					</Form>
 
 					<Form  >
-						<Button variant='danger' className='my-1 btn-block' onClick={() => deleteTodo(id)}>Delete</Button>
+						<Button variant='danger' className='my-1 btn-block' onClick={() => deleteTask(id)}>Delete</Button>
 					</Form>
 					{completed ?
 						<Form>
-							<Button variant='secondary' className='my-1 btn-block' onClick={() => unCompleteTodo(id)}>Undo</Button>
+							<Button variant='secondary' className='my-1 btn-block' onClick={() => changeTaskState(id)}>Undo</Button>
 						</Form> :
 						<Form>
-							<Button variant='success' className='my-1 btn-block' onClick={() => completeTodo(id)}>Complete</Button>
+							<Button variant='success' className='my-1 btn-block' onClick={() => changeTaskState(id)}>Complete</Button>
 						</Form>}
 
 				</Col>
@@ -80,7 +80,7 @@ const Todo = ({ id, title, description, completed, completeTodo, unCompleteTodo,
 					<Button variant="secondary" onClick={handleClose}>
 						Close
 					</Button>
-					<Button variant="primary" onClick={() => editTodoHandler(newTitle, newBody)}>
+					<Button variant="primary" onClick={() => editTaskHandler(newTitle, newBody)}>
 						Save Changes
 					</Button>
 				</Modal.Footer>
@@ -89,4 +89,4 @@ const Todo = ({ id, title, description, completed, completeTodo, unCompleteTodo,
 	)
 }
 
-export default Todo
+export default Task

@@ -1,83 +1,130 @@
 import React, { useState, useEffect } from "react";
 import AuthService from "../services/auth.service";
-import AddTodo from './AddTodo.js'
-import Todo from './Todo'
-import { Container, Row, Col, Card } from 'react-bootstrap'
+import AddTask from './AddTask.js'
+import Task from './Task'
+import { Container, Row, Col } from 'react-bootstrap'
 import axios from 'axios'
 import authHeader from "../services/auth-header";
 
 const Home = () => {
-  const [tasks, setTasks] = useState([]);
   const [user, setUser] = useState([]);
-  const [todos, setTodos] = useState([])
+  const [tasks, setTasks] = useState([])
   const [errors, setErrors] = useState([])
 
   const API_URL = "http://api.test/api";
 
+  const updateToken = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    try {
+      const response = await fetch(API_URL + '/refresh', {
+        method: 'POST',
+        body: JSON.stringify({
+          refreshToken: user.refreshToken
+        })
+      });
+
+      const json = await response.text();
+      const data = JSON.parse(json);
+
+      if (response.status === 200) {
+        console.log("Got new access token and refresh token");
+        localStorage.setItem("user", JSON.stringify(data));
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     if (AuthService.getCurrentUser()) {
-      getTodos()
+      getTasks()
     }
   }, []);
 
-  const getTodos = async () => {
+  const getTasks = async () => {
     try {
-      const response = await axios.get(API_URL + '/tasks', { headers: authHeader() })
-      const { data } = response
-      setTodos(data)
-    } catch (err) {
-      console.log(err)
+      const response = await fetch(API_URL + '/tasks', {
+        headers: {
+          'Authorization': authHeader()
+        }
+      });
+
+      if (response.status === 200) {
+        const json = await response.text();
+        const data = JSON.parse(json);
+        setTasks(data);
+      } else {
+        updateToken();
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 
-  const addTodo = async newTodo => {
+  const addTask = async newTask => {
     try {
-      console.log(newTodo)
-      await axios.post(API_URL + '/tasks', newTodo, { headers: authHeader() })
-      getTodos()
-    } catch (err) {
-      setErrors(err.response.data.errors);
-      console.log(errors);
+      const response = await fetch(API_URL + '/tasks', {
+        method: 'POST',
+        headers: {
+          'Authorization': authHeader()
+        },
+        body: JSON.stringify(newTask)
+      });
+      if (response.status !== 201) {
+        updateToken();
+      }
+      getTasks();
+
+    } catch (error) {
+      console.log(error)
     }
   }
 
-  const completeTodo = async id => {
+  const changeTaskState = async id => {
     try {
-      const todo = todos.filter(todo => todo.id === id)[0]
-      todo.completed = true
-      await axios.patch(API_URL + `/tasks/${id}/`, todo, { headers: authHeader() })
-      getTodos()
-    } catch (err) {
-      console.log(err);
+      const task = tasks.filter(task => task.id === id)[0];
+      task.completed = !task.completed;
+      const response = await fetch(API_URL + `/tasks/${id}/`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': authHeader()
+        },
+        body: JSON.stringify(task)
+      });
+      if (response.status !== 200) {
+        updateToken();
+      }
+      getTasks();
+
+    } catch (error) {
+      console.log(error)
     }
   }
 
-  const unCompleteTodo = async id => {
+  const editTask = async task => {
     try {
-      const todo = todos.filter(todo => todo.id === id)[0]
-      todo.completed = false
-      await axios.patch(API_URL + `/tasks/${id}/`, todo, { headers: authHeader() })
-      getTodos()
-    } catch (err) {
-      console.log(err)
+      const response = await fetch(API_URL + `/tasks/${task.id}/`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': authHeader()
+        },
+        body: JSON.stringify(task)
+      });
+      if (response.status !== 200) {
+        updateToken();
+      }
+      getTasks();
+
+    } catch (error) {
+      console.log(error)
     }
   }
 
-  const editTodo = async todo => {
-    try {
-      await axios.patch(API_URL + `/tasks/${todo.id}/`, todo, { headers: authHeader() })
-      errors['updateTitle'] = '';
-      setErrors(errors);
-      getTodos()
-    } catch (err) {
-      console.log(errors);
-    }
-  }
-
-  const deleteTodo = async id => {
+  const deleteTask = async id => {
     try {
       await axios.delete(API_URL + `/tasks/${id}/`, { headers: authHeader() })
-      getTodos()
+      getTasks()
     } catch (err) {
       console.log(err)
     }
@@ -90,10 +137,10 @@ const Home = () => {
           <Row className='justify-content-center pt-5'>
             <Col>
               <h3>Tasks</h3>
-              <AddTodo addTodo={addTodo} errors={errors} setErrors={setErrors} />
+              <AddTask addTask={addTask} errors={errors} setErrors={setErrors} />
 
-              {todos.map((todo, index) => (
-                <Todo key={index} errors={errors} setErrors={setErrors} id={todo.id} title={todo.title} completed={todo.completed} description={todo.body} unCompleteTodo={unCompleteTodo} completeTodo={completeTodo} editTodo={editTodo} deleteTodo={deleteTodo} />
+              {tasks.map((task, index) => (
+                <Task key={index} errors={errors} setErrors={setErrors} id={task.id} title={task.title} completed={task.completed} description={task.body} changeTaskState={changeTaskState} editTask={editTask} deleteTask={deleteTask} />
               ))}
             </Col>
           </Row>

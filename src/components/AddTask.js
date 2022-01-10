@@ -2,13 +2,13 @@ import React, { useState } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import AuthService from "../services/auth.service";
 
-const AddTodo = ({ addTodo, errors, setErrors }) => {
+const AddTask = ({ addTask, errors, setErrors }) => {
 	const [title, setTitle] = useState('')
 	const [body, setBody] = useState('')
 
-	const addTodoHandler = e => {
+	const addTaskHandler = e => {
 		e.preventDefault()
-		addTodo({
+		addTask({
 			title,
 			body,
 			completed: false,
@@ -31,7 +31,7 @@ const AddTodo = ({ addTodo, errors, setErrors }) => {
 		<Form>
 			<Form.Group controlId='title'>
 				<Form.Label>Task title</Form.Label>
-				<Form.Control type='text' className='mb-2' placeholder='Enter Todo Title' onChange={setTitleValue} />
+				<Form.Control type='text' className='mb-2' placeholder='Enter Task Title' onChange={setTitleValue} />
 				{errors.title && (<p className='text-danger'>{errors.title}</p>)}
 			</Form.Group>
 
@@ -42,9 +42,9 @@ const AddTodo = ({ addTodo, errors, setErrors }) => {
 
 			</Form.Group>
 
-			<Button variant='primary' className='mt-3 mb-5' type='submit' onClick={addTodoHandler}>Add Todo</Button>
+			<Button variant='primary' className='mt-3 mb-5' type='submit' onClick={addTaskHandler}>Add Task</Button>
 		</Form >
 	)
 }
 
-export default AddTodo
+export default AddTask
