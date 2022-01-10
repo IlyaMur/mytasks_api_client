@@ -9,12 +9,14 @@ import { Container, Row, Col, Card } from 'react-bootstrap'
 
 function App() {
   const [currentUser, setCurrentUser] = useState(undefined);
+  const [isAuth, setIsAUth] = useState(false);
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
 
     if (user) {
       setCurrentUser(user);
+      setIsAUth(true);
     }
   }, []);
 
@@ -75,14 +77,14 @@ function App() {
             <Col md="8">
               <Card>
                 <Routes>
-                  <Route path="/" element={<PrivateRoute auth={{ isAuthenticated: AuthService.getCurrentUser() }} > <Home /> </PrivateRoute>}
+                  <Route path="/" element={<PrivateRoute auth={{ isAuthenticated: isAuth }} > <Home /> </PrivateRoute>}
                   />
-                  <Route path="/home" element={<PrivateRoute auth={{ isAuthenticated: AuthService.getCurrentUser() }} > <Home /> </PrivateRoute>}
+                  <Route path="/home" element={<PrivateRoute auth={{ isAuthenticated: isAuth }} > <Home /> </PrivateRoute>}
                   />
 
-                  <Route path="/signup" element={<PrivateRouteLogin auth={{ isAuthenticated: !AuthService.getCurrentUser() }} > <Signup /> </PrivateRouteLogin>}
+                  <Route path="/signup" element={<PrivateRouteLogin auth={{ isAuthenticated: !isAuth }} > <Signup setIsAUth={setIsAUth} /> </PrivateRouteLogin>}
                   />
-                  <Route path="/login" element={<PrivateRouteLogin auth={{ isAuthenticated: !AuthService.getCurrentUser() }} > <Login /> </PrivateRouteLogin>}
+                  <Route path="/login" element={<PrivateRouteLogin auth={{ isAuthenticated: !isAuth }} > <Login setIsAUth={setIsAUth} /> </PrivateRouteLogin>}
                   />
                 </Routes>
               </Card>

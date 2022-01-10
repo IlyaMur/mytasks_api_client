@@ -3,7 +3,7 @@ import AuthService from "../services/auth.service";
 import { useNavigate } from "react-router-dom";
 import { Form, Button } from 'react-bootstrap'
 
-const Signup = () => {
+const Signup = ({ setIsAUth }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -17,6 +17,7 @@ const Signup = () => {
         (response) => {
           // check for token and user already exists with 200
           //   console.log("Sign up successfully", response);
+          setIsAUth(true);
           navigate("/home");
           window.location.reload();
         },

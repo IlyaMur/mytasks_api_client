@@ -4,7 +4,7 @@ import AuthService from "../services/auth.service";
 import { Form, Button } from 'react-bootstrap'
 
 
-const Login = () => {
+const Login = ({ setIsAUth }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
