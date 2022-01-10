@@ -30,11 +30,9 @@ const Todo = ({ id, title, description, completed, completeTodo, unCompleteTodo,
 		}
 	}
 
-
 	return (
-		<>
-			<Row className='border-bottom pt-3'>
-
+		<div>
+			<Row className='border-bottom'>
 
 				<Col>
 					<h5>{title}</h5>
@@ -42,12 +40,12 @@ const Todo = ({ id, title, description, completed, completeTodo, unCompleteTodo,
 					<p>{completed ? <Badge bg="success" className='my-2'>Completed!</Badge> : ''}</p>
 				</Col>
 
-				<Col md={2}>
+				<Col md={2} className='p-2'>
 					<Form>
 						<Button variant='info' className='my-1 btn-block' onClick={handleShow}>Edit</Button>
 					</Form>
 
-					<Form>
+					<Form  >
 						<Button variant='danger' className='my-1 btn-block' onClick={() => deleteTodo(id)}>Delete</Button>
 					</Form>
 					{completed ?
@@ -87,7 +85,7 @@ const Todo = ({ id, title, description, completed, completeTodo, unCompleteTodo,
 					</Button>
 				</Modal.Footer>
 			</Modal>
-		</>
+		</div >
 	)
 }
 

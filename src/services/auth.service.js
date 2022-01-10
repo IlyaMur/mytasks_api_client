@@ -11,7 +11,6 @@ const signup = (email, username, password) => {
       password
     })
     .then((response) => {
-      alert(JSON.stringify(response.data));
       if (response.data.accessToken) {
         localStorage.setItem("user", JSON.stringify(response.data));
       }
