@@ -19,19 +19,33 @@ const signup = (email, username, password) => {
     });
 };
 
-const login = (email, password) => {
-  return axios
-    .post(API_URL + "/login", {
-      email,
-      password,
-    })
-    .then((response) => {
-      if (response.data.accessToken) {
-        localStorage.setItem("user", JSON.stringify(response.data));
-      }
+// const login = (email, password) => {
+//   return axios
+//     .post(API_URL + "/login", {
+//       email,
+//       password,
+//     })
+//     .then((response) => {
+//       if (response.data.accessToken) {
+//         localStorage.setItem("user", JSON.stringify(response.data));
+//       }
 
-      return response.data;
-    });
+//       return response.data;
+//     });
+// };
+
+const login = async (email, password) => {
+  const response = await fetch(API_URL + "/login", {
+    method: 'POST',
+    body: JSON.stringify({
+      email: email,
+      password: password
+    }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  return response;
 };
 
 const logout = () => {

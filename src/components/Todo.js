@@ -16,7 +16,7 @@ const Todo = ({ id, title, description, completed, completeTodo, unCompleteTodo,
 	const handleShow = () => setShow(true);
 
 	const editTodoHandler = (title, body) => {
-		handleClose()
+		handleClose();
 		const todo = {
 			id,
 			title,
