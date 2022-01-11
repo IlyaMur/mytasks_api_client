@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Form, Button } from 'react-bootstrap'
 import * as Yup from 'yup'
 import { Formik } from 'formik';
+import { Link } from "react-router-dom";
 
 const Signup = ({ setIsAUth }) => {
   const [errors, setErrors] = useState([]);
@@ -53,7 +54,7 @@ const Signup = ({ setIsAUth }) => {
           handleSubmit }) => (
           <Form onSubmit={handleSubmit}>
             <h1 className="text-center"> Signup </h1>
-            <Form.Group className="mb-4" controlId="formBasicEmail">
+            <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Email address</Form.Label>
               <Form.Control
                 name="email" type="email" placeholder="Enter email" onChange={handleChange} onBlur={handleBlur} value={values.email} className={touched.email && errors.email ? "error" : null}
@@ -62,7 +63,7 @@ const Signup = ({ setIsAUth }) => {
                 <div className="error-message">{errors.email}</div>
               ) : null}
             </Form.Group>
-            <Form.Group className="mb-4" controlId="formBasicUsername">
+            <Form.Group className="mb-3" controlId="formBasicUsername">
               <Form.Label>Username</Form.Label>
               <Form.Control
                 name="username" type="text" placeholder="Enter your username" onChange={handleChange} onBlur={handleBlur} value={values.username} className={touched.username && errors.username ? "error" : null}
@@ -72,7 +73,7 @@ const Signup = ({ setIsAUth }) => {
               ) : null}
             </Form.Group>
 
-            <Form.Group className="mb-4" controlId="formBasicPassword">
+            <Form.Group className="mb-3" controlId="formBasicPassword">
               <Form.Label>Password</Form.Label>
               <Form.Control
                 name="password" type="password" onChange={handleChange} onBlur={handleBlur} placeholder="Password" value={values.password} className={touched.password && errors.password ? "error" : null}
@@ -81,8 +82,10 @@ const Signup = ({ setIsAUth }) => {
                 <div className="error-message">{errors.password}</div>
               ) : null}
             </Form.Group>
-
-            <Button variant="primary" type="submit" className="mt-4" >
+            Already have an acount? <Link to={"/login"}>
+              Log in!
+            </Link>! <div></div>
+            <Button variant="primary" type="submit" className="mt-3" >
               Sign Up
             </Button >
           </Form>

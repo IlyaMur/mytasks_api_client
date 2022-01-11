@@ -4,6 +4,7 @@ import AuthService from "../services/authService";
 import { Form, Button } from 'react-bootstrap'
 import { Formik } from 'formik';
 import * as Yup from 'yup'
+import { Link } from "react-router-dom";
 
 const Login = ({ setLoginShow }) => {
   const [errors, setErrors] = useState([]);
@@ -71,6 +72,9 @@ const Login = ({ setLoginShow }) => {
                 <div className="error-message">{errors.password}</div>
               ) : null}
             </Form.Group>
+            Don't have an account? <Link to={"/signup"}>
+              Sign up
+            </Link>! <div></div>
 
             <Button variant="primary" type="submit" className="mt-4" >
               Log In
@@ -79,7 +83,6 @@ const Login = ({ setLoginShow }) => {
         )}
       </Formik>
       {errors.general && (<p className='text-danger text-end'>{errors.general}</p>)}
-
     </div>
   );
 };
