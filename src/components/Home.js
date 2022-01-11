@@ -14,7 +14,8 @@ const Home = () => {
   const [delShow, setDelShow] = useState(false);
   const [editShow, setEditShow] = useState(false);
 
-  const API_URL = "http://api.test/api";
+  const API_URL = "https://rest-todoapp.herokuapp.com/api";
+
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
@@ -132,7 +133,6 @@ const Home = () => {
 
   return (
     <div className='wrapper'>
-      <i class="fas fa-edit"></i>
       {AuthService.getCurrentUser &&
         <Container>
           <Row className='justify-content-center pt-5'>
