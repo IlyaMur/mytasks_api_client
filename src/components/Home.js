@@ -60,10 +60,17 @@ const Home = () => {
         taskService.updateToken();
       }
       getTasks();
+      resetFlashes();
       setAddShow(true);
     } catch (error) {
       console.log(error)
     }
+  }
+
+  const resetFlashes = () => {
+    setAddShow(false);
+    setDelShow(false);
+    setEditShow(false);
   }
 
   const changeTaskState = async id => {
@@ -102,6 +109,7 @@ const Home = () => {
       if (!response.ok) {
         taskService.updateToken();
       } else {
+        resetFlashes();
         setEditShow(true);
       }
       getTasks();
@@ -123,6 +131,7 @@ const Home = () => {
       if (!response.ok) {
         taskService.updateToken();
       } else {
+        resetFlashes();
         setDelShow(true);
       }
       getTasks();
@@ -136,15 +145,17 @@ const Home = () => {
       {AuthService.getCurrentUser &&
         <Container>
           <Row className='justify-content-center'>
-            <Alert onClose={() => setAddShow(false)} dismissible show={addShow} variant='success'>
-              Task was added
-            </Alert>
-            <Alert onClose={() => setDelShow(false)} dismissible show={delShow} variant='danger'>
-              Task was deleted
-            </Alert>
-            <Alert onClose={() => setEditShow(false)} dismissible show={editShow} variant='warning'>
-              Task was edited
-            </Alert>
+            <div className="mt-3">
+              <Alert onClose={() => setAddShow(false)} dismissible show={addShow} variant='success'>
+                Task was added
+              </Alert>
+              <Alert onClose={() => setDelShow(false)} dismissible show={delShow} variant='danger'>
+                Task was deleted
+              </Alert>
+              <Alert onClose={() => setEditShow(false)} dismissible show={editShow} variant='warning'>
+                Task was edited
+              </Alert>
+            </div>
             <Col>
               <AddTask addTask={addTask} errors={errors} setErrors={setErrors} />
               {tasks.map((task, index) => (
