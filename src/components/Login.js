@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AuthService from "../services/auth.service";
+import AuthService from "../services/authService";
 import { Form, Button } from 'react-bootstrap'
 import { Formik } from 'formik';
 import * as Yup from 'yup'
 
-const Login = ({ setIsAUth }) => {
+const Login = ({ setLoginShow }) => {
   const [errors, setErrors] = useState([]);
 
   const navigate = useNavigate();
@@ -26,12 +26,13 @@ const Login = ({ setIsAUth }) => {
     const json = await response.text();
     const data = JSON.parse(json);
 
-    if (response.status !== 200) {
+    if (!response.ok) {
       setErrors(data);
     } else {
       localStorage.setItem("user", JSON.stringify(data));
       navigate("/");
       window.location.reload();
+
     }
   };
 
@@ -47,7 +48,7 @@ const Login = ({ setIsAUth }) => {
           handleChange,
           handleBlur,
           handleSubmit,
-          isSubmitting }) => (
+        }) => (
 
           <Form onSubmit={handleSubmit}>
             <h1 className="text-center"> Login </h1>

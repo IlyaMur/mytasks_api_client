@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AuthService from "../services/auth.service";
+import AuthService from "../services/authService";
 import { useNavigate } from "react-router-dom";
 import { Form, Button } from 'react-bootstrap'
 import * as Yup from 'yup'
@@ -50,9 +50,7 @@ const Signup = ({ setIsAUth }) => {
           touched,
           handleChange,
           handleBlur,
-          handleSubmit,
-          isSubmitting }) => (
-
+          handleSubmit }) => (
           <Form onSubmit={handleSubmit}>
             <h1 className="text-center"> Signup </h1>
             <Form.Group className="mb-4" controlId="formBasicEmail">

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, Link, Navigate } from "react-router-dom";
-import AuthService from "./services/auth.service";
+import AuthService from "./services/authService";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Home from "./components/Home";
@@ -70,8 +70,7 @@ function App() {
         </div>
       </nav>
 
-
-      <div className="container mt-3">
+      <div className="container">
         <Container>
           <Row className='justify-content-center pt-5'>
             <Col md="8">

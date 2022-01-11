@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Row, Col, Form, Button, Modal, Badge } from 'react-bootstrap'
 
+
 const Task = ({ id, title, description, completed, changeTaskState, editTask, deleteTask }) => {
 	const [show, setShow] = useState(false);
-
 	const [newTitle, setTitle] = useState(title)
 	const [newBody, setBody] = useState(description)
 
@@ -33,7 +33,6 @@ const Task = ({ id, title, description, completed, changeTaskState, editTask, de
 	return (
 		<div>
 			<Row className='border-bottom'>
-
 				<Col>
 					<h5>{title}</h5>
 					<p>{description}</p>
@@ -42,19 +41,21 @@ const Task = ({ id, title, description, completed, changeTaskState, editTask, de
 
 				<Col md={2} className='p-2'>
 					<Form>
-						<Button variant='info' className='my-1 btn-block' onClick={handleShow}>Edit</Button>
-					</Form>
-
-					<Form  >
-						<Button variant='danger' className='my-1 btn-block' onClick={() => deleteTask(id)}>Delete</Button>
+						<Button variant='info' size="sm" className='my-1 btn-block' onClick={handleShow}>
+							Edit</Button>
 					</Form>
 					{completed ?
 						<Form>
-							<Button variant='secondary' className='my-1 btn-block' onClick={() => changeTaskState(id)}>Undo</Button>
+							<Button variant='secondary' size="sm" className='my-1 btn-block' onClick={() => changeTaskState(id)}>Undo</Button>
 						</Form> :
 						<Form>
-							<Button variant='success' className='my-1 btn-block' onClick={() => changeTaskState(id)}>Complete</Button>
+							<Button variant='success' size="sm" className='my-1 btn-block' onClick={() => changeTaskState(id)}>Complete</Button>
 						</Form>}
+
+					<Form  >
+						<Button variant='danger' size="sm" className='my-1 btn-block' onClick={() => deleteTask(id)}>Delete</Button>
+					</Form>
+
 
 				</Col>
 			</Row>

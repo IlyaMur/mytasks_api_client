@@ -1,33 +1,51 @@
-// import getJWT from "./auth-header";
+const API_URL = "http://api.test/api";
 
-// const API_URL = "http://api.test/api";
+const updateToken = async () => {
+  console.log("Access token expired, requesting new one");
 
-// const updateToken = async () => {
-//   console.log("Access token expired, requesting new one");
+  const user = JSON.parse(localStorage.getItem("user"));
+  const options = {
+    method: 'POST',
+    body: JSON.stringify({
+      refreshToken: user.refreshToken
+    })
+  };
 
-//   const user = JSON.parse(localStorage.getItem("user"));
+  try {
+    const response = await fetch(API_URL + '/refresh', options);
+    const json = await response.text();
+    const data = JSON.parse(json);
+
+    if (response.ok) {
+      localStorage.removeItem("user");
+      console.log("Got new access token and refresh token");
+      localStorage.setItem("user", JSON.stringify(data));
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// const getTasks = async (setTasks) => {
 //   const options = {
-//     method: 'POST',
-//     body: JSON.stringify({
-//       refreshToken: user.refreshToken
-//     })
+//     headers: {
+//       'Authorization': getJWT()
+//     }
 //   };
 
 //   try {
-//     const response = await fetch(API_URL + '/refresh', options);
-//     const json = await response.text();
-//     const data = JSON.parse(json);
-
+//     const response = await fetch(API_URL + '/tasks', options);
 //     if (response.ok) {
-//       localStorage.removeItem("user");
-//       console.log("Got new access token and refresh token");
-//       localStorage.setItem("user", JSON.stringify(data));
+//       const json = await response.text();
+//       const data = JSON.parse(json);
+//       setTasks(data);
+//     } else {
+//       updateToken();
 //     }
 //   } catch (error) {
-//     console.log(error);
+//     console.log(error)
 //   }
 // }
-
 
 // const addTask = async newTask => {
 //   const options = {
@@ -88,13 +106,12 @@
 //   }
 // }
 
-// const postService = {
-//   updateToken,
-//   getTasks,
-//   editTask,
-//   deleteTask,
-//   addTask
-// };
+const taskService = {
+  updateToken,
+  // editTask,
+  // deleteTask,
+  // addTask
+};
 
 
-// export default postService;
+export default taskService;

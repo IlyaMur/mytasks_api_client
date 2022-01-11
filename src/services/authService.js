@@ -33,14 +33,12 @@ const logout = async () => {
   const user = JSON.parse(localStorage.getItem("user"));
   localStorage.removeItem("user");
 
-  const response = await fetch(API_URL + '/logout', {
+  await fetch(API_URL + '/logout', {
     method: 'POST',
     body: JSON.stringify({
       refreshToken: user.refreshToken
     })
   });
-  alert(await response.text());
-
 };
 
 const getCurrentUser = () => {

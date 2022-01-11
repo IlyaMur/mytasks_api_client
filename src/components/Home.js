@@ -1,45 +1,25 @@
 import React, { useState, useEffect } from "react";
-import AuthService from "../services/auth.service";
+import AuthService from "../services/authService";
 import AddTask from './AddTask.js'
 import Task from './Task'
 import { Container, Row, Col } from 'react-bootstrap'
-import getJWT from "../services/auth-header";
+import getJWT from "../services/headerService";
+import taskService from "../services/taskService";
+import { Alert } from 'react-bootstrap'
 
 const Home = () => {
   const [tasks, setTasks] = useState([])
   const [errors, setErrors] = useState([])
+  const [addShow, setAddShow] = useState(false);
+  const [delShow, setDelShow] = useState(false);
+  const [editShow, setEditShow] = useState(false);
 
   const API_URL = "http://api.test/api";
 
-  const updateToken = async () => {
-    console.log("Access token expired, requesting new one");
-
-    const user = JSON.parse(localStorage.getItem("user"));
-    const options = {
-      method: 'POST',
-      body: JSON.stringify({
-        refreshToken: user.refreshToken
-      })
-    };
-
-    try {
-      const response = await fetch(API_URL + '/refresh', options);
-      const json = await response.text();
-      const data = JSON.parse(json);
-
-      if (response.ok) {
-        localStorage.removeItem("user");
-        console.log("Got new access token and refresh token");
-        localStorage.setItem("user", JSON.stringify(data));
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   useEffect(() => {
-    if (AuthService.getCurrentUser()) {
-      getTasks()
+    const user = AuthService.getCurrentUser();
+    if (user) {
+      getTasks();
     }
   }, []);
 
@@ -57,7 +37,7 @@ const Home = () => {
         const data = JSON.parse(json);
         setTasks(data);
       } else {
-        updateToken();
+        taskService.updateToken();
       }
     } catch (error) {
       console.log(error)
@@ -76,13 +56,13 @@ const Home = () => {
     try {
       const response = await fetch(API_URL + '/tasks', options);
       if (!response.ok) {
-        updateToken();
+        taskService.updateToken();
       }
       getTasks();
+      setAddShow(true);
     } catch (error) {
       console.log(error)
     }
-
   }
 
   const changeTaskState = async id => {
@@ -99,7 +79,7 @@ const Home = () => {
     try {
       const response = await fetch(API_URL + `/tasks/${id}/`, options);
       if (!response.ok) {
-        updateToken();
+        taskService.updateToken();
       }
       getTasks();
     } catch (error) {
@@ -119,7 +99,9 @@ const Home = () => {
     try {
       const response = await fetch(API_URL + `/tasks/${task.id}/`, options);
       if (!response.ok) {
-        updateToken();
+        taskService.updateToken();
+      } else {
+        setEditShow(true);
       }
       getTasks();
     } catch (error) {
@@ -138,7 +120,9 @@ const Home = () => {
     try {
       const response = await fetch(API_URL + `/tasks/${id}/`, options);
       if (!response.ok) {
-        updateToken();
+        taskService.updateToken();
+      } else {
+        setDelShow(true);
       }
       getTasks();
     } catch (error) {
@@ -148,13 +132,21 @@ const Home = () => {
 
   return (
     <div className='wrapper'>
+      <i class="fas fa-edit"></i>
       {AuthService.getCurrentUser &&
         <Container>
           <Row className='justify-content-center pt-5'>
+            <Alert onClose={() => setAddShow(false)} dismissible show={addShow} variant='success'>
+              Task was added
+            </Alert>
+            <Alert onClose={() => setDelShow(false)} dismissible show={delShow} variant='danger'>
+              Task was deleted
+            </Alert>
+            <Alert onClose={() => setEditShow(false)} dismissible show={editShow} variant='warning'>
+              Task was edited
+            </Alert>
             <Col>
-              <h3>Tasks</h3>
               <AddTask addTask={addTask} errors={errors} setErrors={setErrors} />
-
               {tasks.map((task, index) => (
                 <Task key={index} errors={errors} setErrors={setErrors} id={task.id} title={task.title} completed={task.completed} description={task.body} changeTaskState={changeTaskState} editTask={editTask} deleteTask={deleteTask} />
               ))}
