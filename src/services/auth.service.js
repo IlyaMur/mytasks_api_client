@@ -29,10 +29,6 @@ const login = async (email, password) => {
   return response;
 };
 
-// const logout = () => {
-//   localStorage.removeItem("user");
-// };
-
 const logout = async () => {
   const user = JSON.parse(localStorage.getItem("user"));
   localStorage.removeItem("user");

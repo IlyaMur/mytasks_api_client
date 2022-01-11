@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Form, Button } from 'react-bootstrap'
-import AuthService from "../services/auth.service";
 
 const AddTask = ({ addTask, errors, setErrors }) => {
 	const [title, setTitle] = useState('')
