@@ -6,10 +6,14 @@ import Signup from "./components/Signup";
 import Home from "./components/Home";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Row, Col, Card } from 'react-bootstrap'
+import { useNavigate } from "react-router-dom";
+import { Button } from 'react-bootstrap'
+
 
 function App() {
   const [currentUser, setCurrentUser] = useState(undefined);
   const [isAuth, setIsAUth] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
@@ -22,6 +26,7 @@ function App() {
 
   const logOut = () => {
     AuthService.logout();
+    window.location.reload();
   };
 
   const PrivateRoute = ({ auth: { isAuthenticated }, children }) => {
@@ -47,9 +52,9 @@ function App() {
           {currentUser ? (
             <div className="navbar-nav ms-auto">
               <li className="nav-item">
-                <a href="/login" className="nav-link" onClick={logOut}>
+                <Link to={"/login"} className="nav-link" onClick={logOut}>
                   Logout
-                </a>
+                </Link>
               </li>
             </div>
           ) : (
