@@ -3,34 +3,35 @@ import AuthService from "../services/auth.service";
 import AddTask from './AddTask.js'
 import Task from './Task'
 import { Container, Row, Col } from 'react-bootstrap'
-import axios from 'axios'
-import authHeader from "../services/auth-header";
+import getJWT from "../services/auth-header";
 
 const Home = () => {
-  const [user, setUser] = useState([]);
   const [tasks, setTasks] = useState([])
   const [errors, setErrors] = useState([])
 
   const API_URL = "http://api.test/api";
 
   const updateToken = async () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    try {
-      const response = await fetch(API_URL + '/refresh', {
-        method: 'POST',
-        body: JSON.stringify({
-          refreshToken: user.refreshToken
-        })
-      });
+    console.log("Access token expired, requesting new one");
 
+    const user = JSON.parse(localStorage.getItem("user"));
+    const options = {
+      method: 'POST',
+      body: JSON.stringify({
+        refreshToken: user.refreshToken
+      })
+    };
+
+    try {
+      const response = await fetch(API_URL + '/refresh', options);
       const json = await response.text();
       const data = JSON.parse(json);
 
-      if (response.status === 200) {
+      if (response.ok) {
+        localStorage.removeItem("user");
         console.log("Got new access token and refresh token");
         localStorage.setItem("user", JSON.stringify(data));
       }
-
     } catch (error) {
       console.log(error);
     }
@@ -43,14 +44,15 @@ const Home = () => {
   }, []);
 
   const getTasks = async () => {
-    try {
-      const response = await fetch(API_URL + '/tasks', {
-        headers: {
-          'Authorization': authHeader()
-        }
-      });
+    const options = {
+      headers: {
+        'Authorization': getJWT()
+      }
+    };
 
-      if (response.status === 200) {
+    try {
+      const response = await fetch(API_URL + '/tasks', options);
+      if (response.ok) {
         const json = await response.text();
         const data = JSON.parse(json);
         setTasks(data);
@@ -63,70 +65,84 @@ const Home = () => {
   }
 
   const addTask = async newTask => {
+    const options = {
+      method: 'POST',
+      headers: {
+        'Authorization': getJWT()
+      },
+      body: JSON.stringify(newTask)
+    };
+
     try {
-      const response = await fetch(API_URL + '/tasks', {
-        method: 'POST',
-        headers: {
-          'Authorization': authHeader()
-        },
-        body: JSON.stringify(newTask)
-      });
-      if (response.status !== 201) {
+      const response = await fetch(API_URL + '/tasks', options);
+      if (!response.ok) {
         updateToken();
       }
       getTasks();
-
     } catch (error) {
       console.log(error)
     }
+
   }
 
   const changeTaskState = async id => {
+    const task = tasks.filter(task => task.id === id)[0];
+    task.completed = !task.completed;
+    const options = {
+      method: 'PATCH',
+      headers: {
+        'Authorization': getJWT()
+      },
+      body: JSON.stringify(task)
+    };
+
     try {
-      const task = tasks.filter(task => task.id === id)[0];
-      task.completed = !task.completed;
-      const response = await fetch(API_URL + `/tasks/${id}/`, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': authHeader()
-        },
-        body: JSON.stringify(task)
-      });
-      if (response.status !== 200) {
+      const response = await fetch(API_URL + `/tasks/${id}/`, options);
+      if (!response.ok) {
         updateToken();
       }
       getTasks();
-
     } catch (error) {
       console.log(error)
     }
   }
 
   const editTask = async task => {
+    const options = {
+      method: 'PATCH',
+      headers: {
+        'Authorization': getJWT()
+      },
+      body: JSON.stringify(task)
+    };
+
     try {
-      const response = await fetch(API_URL + `/tasks/${task.id}/`, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': authHeader()
-        },
-        body: JSON.stringify(task)
-      });
-      if (response.status !== 200) {
+      const response = await fetch(API_URL + `/tasks/${task.id}/`, options);
+      if (!response.ok) {
         updateToken();
       }
       getTasks();
-
     } catch (error) {
       console.log(error)
     }
   }
 
   const deleteTask = async id => {
+    const options = {
+      method: 'DELETE',
+      headers: {
+        'Authorization': getJWT()
+      }
+    };
+
     try {
-      await axios.delete(API_URL + `/tasks/${id}/`, { headers: authHeader() })
-      getTasks()
-    } catch (err) {
-      console.log(err)
+      const response = await fetch(API_URL + `/tasks/${id}/`, options);
+      if (!response.ok) {
+        updateToken();
+      }
+      getTasks();
+    } catch (error) {
+      console.log(error)
     }
   }
 
