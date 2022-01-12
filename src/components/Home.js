@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import AuthService from "../services/authService";
 import AddTask from './AddTask.js'
 import Task from './Task'
-import { Container, Row, Col } from 'react-bootstrap'
+import { Container, Row, Col, Spinner } from 'react-bootstrap'
 import getJWTHeader from "../services/headerService";
 import { Alert } from 'react-bootstrap'
 import axios from 'axios';
@@ -15,6 +15,7 @@ const Home = () => {
   const [addShow, setAddShow] = useState(false);
   const [delShow, setDelShow] = useState(false);
   const [editShow, setEditShow] = useState(false);
+  const [showSpinner, setShowSpinner] = useState(true);
 
   createAuthRefreshInterceptor(axios, AuthService.refreshAuthLogic);
 
@@ -29,6 +30,7 @@ const Home = () => {
       const response = await axios.get(API_URL + '/tasks', getJWTHeader());
       const tasks = response.data
       setTasks(tasks);
+      setShowSpinner(false);
     } catch (error) {
       console.log(error)
     }
@@ -102,9 +104,18 @@ const Home = () => {
             </div>
             <Col>
               <AddTask addTask={addTask} errors={errors} setErrors={setErrors} />
-              {tasks.map((task, index) => (
-                <Task key={index} errors={errors} setErrors={setErrors} id={task.id} title={task.title} completed={task.completed} description={task.body} changeTaskState={changeTaskState} editTask={editTask} deleteTask={deleteTask} />
-              ))}
+              {
+                showSpinner ?
+                  <div style={{ padding: '15px', display: 'flex', justifyContent: 'center' }}>
+                    <Spinner animation="border" variant="info" role="status">
+                      <span className="visually-hidden text-center p-3">Loading...</span>
+                    </Spinner>
+                  </div>
+                  :
+                  tasks.map((task, index) => (
+                    <Task key={index} errors={errors} setErrors={setErrors} id={task.id} title={task.title} completed={task.completed} description={task.body} changeTaskState={changeTaskState} editTask={editTask} deleteTask={deleteTask} />
+                  ))
+              }
             </Col>
           </Row>
         </Container>}
