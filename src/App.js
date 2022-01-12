@@ -6,17 +6,19 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Home from "./components/Home";
 import "bootstrap/dist/css/bootstrap.min.css";
+import jwt_decode from "jwt-decode";
 
 function App() {
-  const [currentUser, setCurrentUser] = useState(undefined);
-  const [isAuth, setIsAUth] = useState(false);
+  const [isAuth, setIsAuth] = useState(false);
+  const [username, setUsername] = useState('');
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
 
     if (user) {
-      setCurrentUser(user);
-      setIsAUth(true);
+      setIsAuth(true);
+      const decodedJWT = jwt_decode(user.accessToken)
+      setUsername(decodedJWT.name);
     }
   }, []);
 
@@ -40,14 +42,20 @@ function App() {
           <div className="navbar-nav mr-auto">
             <li className="nav-item">
               <Link to={"/"} className="nav-link">
-                myTasks
+                MyTasks
               </Link>
             </li>
           </div>
 
-          {currentUser ? (
+          {isAuth ? (
             <div className="navbar-nav ms-auto">
               <li className="nav-item">
+                <span className="nav-link">
+                  Welcome <strong>{username} </strong>
+                </span>
+              </li>
+              <li className="nav-item">
+
                 <Link to={"/login"} className="nav-link" onClick={logOut}>
                   Logout
                 </Link>
@@ -82,9 +90,9 @@ function App() {
                   <Route path="/home" element={<PrivateRoute auth={{ isAuthenticated: isAuth }} > <Home /> </PrivateRoute>}
                   />
 
-                  <Route path="/signup" element={<PrivateRouteLogin auth={{ isAuthenticated: !isAuth }} > <Signup setIsAUth={setIsAUth} /> </PrivateRouteLogin>}
+                  <Route path="/signup" element={<PrivateRouteLogin auth={{ isAuthenticated: !isAuth }} > <Signup setIsAuth={setIsAuth} username={username} setUsername={setUsername} /> </PrivateRouteLogin>}
                   />
-                  <Route path="/login" element={<PrivateRouteLogin auth={{ isAuthenticated: !isAuth }} > <Login setIsAUth={setIsAUth} /> </PrivateRouteLogin>}
+                  <Route path="/login" element={<PrivateRouteLogin auth={{ isAuthenticated: !isAuth }} > <Login username={username} setUsername={setUsername} setIsAuth={setIsAuth} /> </PrivateRouteLogin>}
                   />
                 </Routes>
               </Card>

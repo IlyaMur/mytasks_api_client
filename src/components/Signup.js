@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import AuthService from "../services/authService";
-import { useNavigate } from "react-router-dom";
 import { Form, Button } from 'react-bootstrap'
 import * as Yup from 'yup'
 import { Formik } from 'formik';
 import { Link } from "react-router-dom";
+import jwt_decode from "jwt-decode";
 
-const Signup = ({ setIsAUth }) => {
+const Signup = ({ setIsAuth, setUsername }) => {
   const [errors, setErrors] = useState([]);
-
-  const navigate = useNavigate();
 
   const validationSchema = Yup.object().shape({
     password: Yup.string()
@@ -30,13 +28,14 @@ const Signup = ({ setIsAUth }) => {
     const json = await response.text();
     const data = JSON.parse(json);
 
-    if (response.status !== 201) {
+    if (!response.ok) {
       setErrors(data);
     } else {
-      setIsAUth(true);
+      setIsAuth(true);
       localStorage.setItem("user", JSON.stringify(data));
-      navigate("/home");
-      window.location.reload();
+
+      var decodedJWT = jwt_decode(data.accessToken);
+      setUsername(decodedJWT.name);
     }
   };
 

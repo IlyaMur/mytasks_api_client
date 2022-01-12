@@ -56,12 +56,9 @@ const Task = ({ id, title, description, completed, changeTaskState, editTask, de
 							<Form>
 								<Button variant='success' size="sm" className='my-1 btn-block' onClick={() => changeTaskState(id)}>Complete</Button>
 							</Form>}
-
 						<Form  >
 							<Button variant='danger' size="sm" className='my-1 btn-block' onClick={() => deleteTask(id)}>Delete</Button>
 						</Form>
-
-
 					</Col>
 				</Row>
 

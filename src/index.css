@@ -1,3 +1,8 @@
+html {
+    overflow-x: hidden;
+    margin-right: calc(-1 * (100vw - 100%));
+}
+
 .error {
     border: 2px solid #FF6565 !important;
 }

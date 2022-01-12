@@ -38,7 +38,7 @@ const AddTask = ({ addTask, errors }) => {
 
 						<Form onSubmit={handleSubmit}>
 							<h3 className='text-center'>Tasks</h3>
-							<Form.Group className="mb-2">
+							<Form.Group className="mb-3">
 								<Form.Label>Task title</Form.Label>
 								<Form.Control
 									name="title" type="text" placeholder="Enter title" onChange={handleChange} onBlur={handleBlur} value={values.title} className={touched.title && errors.title ? "error" : null}
