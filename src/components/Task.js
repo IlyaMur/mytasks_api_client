@@ -13,7 +13,11 @@ const Task = ({ id, title, description, completed, changeTaskState, editTask, de
 		setBody(description)
 	}
 
-	const handleShow = () => setShow(true);
+	const handleShow = () => {
+		setTitle(title)
+		setBody(description)
+		setShow(true);
+	}
 
 	const editTaskHandler = (title, body) => {
 		handleClose();
