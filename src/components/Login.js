@@ -22,7 +22,6 @@ const Login = ({ setLoginShow }) => {
 
   const handleSubmit = async values => {
     const { email, password } = values;
-
     const response = await AuthService.login(email, password);
     const json = await response.text();
     const data = JSON.parse(json);
