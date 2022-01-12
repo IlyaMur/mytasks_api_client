@@ -7,9 +7,6 @@ export default function getJWTHeader() {
         'Authorization': 'Bearer ' + user.accessToken
       }
     }
-
-
-    // return 'Bearer ' + user.accessToken;
   } else {
     return {};
   }

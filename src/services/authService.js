@@ -1,5 +1,6 @@
-const API_URL = "http://api.test/api";
+import axios from 'axios';
 
+const API_URL = "http://api.test/api";
 
 const signup = async (email, username, password) => {
   const response = await fetch(API_URL + "/signup", {
@@ -46,11 +47,30 @@ const getCurrentUser = () => {
   return JSON.parse(localStorage.getItem("user"));
 };
 
+const refreshAuthLogic = async (failedRequest) => {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  try {
+    const response = await axios.post(API_URL + '/refresh', { 'refreshToken': user.refreshToken });
+    const tokens = response.data
+    console.log('Got new access token and refresh token');
+
+    localStorage.removeItem('user');
+    localStorage.setItem('user', JSON.stringify(tokens));
+
+    failedRequest.response.config.headers['Authorization'] = 'Bearer ' + tokens.accessToken;
+    return Promise.resolve();
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 const authService = {
   signup,
   login,
   logout,
   getCurrentUser,
+  refreshAuthLogic
 };
 
 export default authService;

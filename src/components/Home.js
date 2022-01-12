@@ -4,10 +4,10 @@ import AddTask from './AddTask.js'
 import Task from './Task'
 import { Container, Row, Col } from 'react-bootstrap'
 import getJWTHeader from "../services/headerService";
-import taskService from "../services/taskService";
 import { Alert } from 'react-bootstrap'
 import axios from 'axios';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
+import { API_URL } from '../apiConfig';
 
 const Home = () => {
   const [tasks, setTasks] = useState([])
@@ -16,31 +16,10 @@ const Home = () => {
   const [delShow, setDelShow] = useState(false);
   const [editShow, setEditShow] = useState(false);
 
-  const API_URL = "http://api.test/api";
-
-  const refreshAuthLogic = async (failedRequest) => {
-    const user = JSON.parse(localStorage.getItem("user"));
-
-    try {
-      const response = await axios.post(API_URL + '/refresh', { 'refreshToken': user.refreshToken });
-      const tokens = response.data
-      console.log('Got new access token and refresh token');
-
-      localStorage.removeItem('user');
-      localStorage.setItem('user', JSON.stringify(tokens));
-
-      failedRequest.response.config.headers['Authorization'] = 'Bearer ' + tokens.accessToken;
-      return Promise.resolve();
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  createAuthRefreshInterceptor(axios, refreshAuthLogic);
+  createAuthRefreshInterceptor(axios, AuthService.refreshAuthLogic);
 
   useEffect(() => {
-    const user = AuthService.getCurrentUser();
-    if (user) {
+    if (AuthService.getCurrentUser()) {
       getTasks();
     }
   }, []);
@@ -64,12 +43,6 @@ const Home = () => {
     } catch (error) {
       console.log(error)
     }
-  }
-
-  const resetFlashes = () => {
-    setAddShow(false);
-    setDelShow(false);
-    setEditShow(false);
   }
 
   const changeTaskState = async id => {
@@ -104,6 +77,12 @@ const Home = () => {
       console.log(error)
     }
   };
+
+  const resetFlashes = () => {
+    setAddShow(false);
+    setDelShow(false);
+    setEditShow(false);
+  }
 
   return (
     <div className='wrapper'>
