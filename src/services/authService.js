@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const API_URL = "http://api.test/api";
+import { API_URL } from '../apiConfig';
 
 const signup = async (email, username, password) => {
   const response = await fetch(API_URL + "/signup", {
