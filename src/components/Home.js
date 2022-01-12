@@ -91,7 +91,7 @@ const Home = () => {
       {AuthService.getCurrentUser &&
         <Container>
           <Row className='justify-content-center'>
-            <div className="mt-3">
+            <div className="mt-2">
               <Alert onClose={() => setAddShow(false)} dismissible show={addShow} variant='success'>
                 Task was added
               </Alert>
