@@ -51,14 +51,14 @@ const AddTask = ({ addTask, errors }) => {
 							<Form.Group className="mb-3" controlId="formBasicPassword">
 								<Form.Label>Task description</Form.Label>
 								<Form.Control
-									as="textarea" name="body" type="text" onChange={handleChange} onBlur={handleBlur} placeholder="Password" value={values.body} className={touched.body && errors.body ? "error" : null}
+									as="textarea" name="body" type="text" onChange={handleChange} onBlur={handleBlur} placeholder="Enter description" value={values.body} className={touched.body && errors.body ? "error" : null}
 								/>
 								{touched.body && errors.body ? (
 									<div className="error-message">{errors.body}</div>
 								) : null}
 							</Form.Group>
 
-							<Button variant="primary" type=" submit" className="mt-2 mb-4" >
+							<Button variant="primary" type="submit" className="mt-2 mb-4" >
 								Add Task
 							</Button >
 						</Form>

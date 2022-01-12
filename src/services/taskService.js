@@ -1,7 +1,27 @@
+import axios from 'axios';
+import createAuthRefreshInterceptor from 'axios-auth-refresh';
+
 const API_URL = "http://api.test/api";
 
+
+// const refreshAuthLogic = (failedRequest) => {
+//   const user = JSON.parse(localStorage.getItem("user"));
+
+//   axios.post(API_URL + '/refresh', { 'refreshToken': user.refreshToken })
+//     .then(tokenRefreshResponse => {
+//       console.log('Got new access token and refresh token');
+//       localStorage.removeItem('user');
+//       localStorage.setItem('user', tokenRefreshResponse.data);
+
+//       failedRequest.response.config.headers['Authorization'] = 'Bearer ' + tokenRefreshResponse.data.accessToken;
+//       return Promise.resolve();
+//     });
+// }
+// createAuthRefreshInterceptor(axios, refreshAuthLogic);
+
+
 const updateToken = async () => {
-  console.log("Access token expired, requesting new one");
+  console.log('Access token expired, requesting new one');
 
   const user = JSON.parse(localStorage.getItem("user"));
   const options = {

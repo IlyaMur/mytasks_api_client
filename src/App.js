@@ -13,7 +13,6 @@ import { Button } from 'react-bootstrap'
 function App() {
   const [currentUser, setCurrentUser] = useState(undefined);
   const [isAuth, setIsAUth] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();

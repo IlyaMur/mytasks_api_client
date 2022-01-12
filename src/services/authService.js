@@ -1,4 +1,5 @@
-const API_URL = "https://rest-todoapp.herokuapp.com/api";
+const API_URL = "http://api.test/api";
+
 
 const signup = async (email, username, password) => {
   const response = await fetch(API_URL + "/signup", {

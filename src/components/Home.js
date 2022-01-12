@@ -3,9 +3,11 @@ import AuthService from "../services/authService";
 import AddTask from './AddTask.js'
 import Task from './Task'
 import { Container, Row, Col } from 'react-bootstrap'
-import getJWT from "../services/headerService";
+import getJWTHeader from "../services/headerService";
 import taskService from "../services/taskService";
 import { Alert } from 'react-bootstrap'
+import axios from 'axios';
+import createAuthRefreshInterceptor from 'axios-auth-refresh';
 
 const Home = () => {
   const [tasks, setTasks] = useState([])
@@ -14,8 +16,27 @@ const Home = () => {
   const [delShow, setDelShow] = useState(false);
   const [editShow, setEditShow] = useState(false);
 
-  const API_URL = "https://rest-todoapp.herokuapp.com/api";
+  const API_URL = "http://api.test/api";
 
+  const refreshAuthLogic = async (failedRequest) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    try {
+      const response = await axios.post(API_URL + '/refresh', { 'refreshToken': user.refreshToken });
+      const tokens = response.data
+      console.log('Got new access token and refresh token');
+
+      localStorage.removeItem('user');
+      localStorage.setItem('user', JSON.stringify(tokens));
+
+      failedRequest.response.config.headers['Authorization'] = 'Bearer ' + tokens.accessToken;
+      return Promise.resolve();
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  createAuthRefreshInterceptor(axios, refreshAuthLogic);
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
@@ -25,40 +46,18 @@ const Home = () => {
   }, []);
 
   const getTasks = async () => {
-    const options = {
-      headers: {
-        'Authorization': getJWT()
-      }
-    };
-
     try {
-      const response = await fetch(API_URL + '/tasks', options);
-      if (response.ok) {
-        const json = await response.text();
-        const data = JSON.parse(json);
-        setTasks(data);
-      } else {
-        taskService.updateToken();
-      }
+      const response = await axios.get(API_URL + '/tasks', getJWTHeader());
+      const tasks = response.data
+      setTasks(tasks);
     } catch (error) {
       console.log(error)
     }
   }
 
   const addTask = async newTask => {
-    const options = {
-      method: 'POST',
-      headers: {
-        'Authorization': getJWT()
-      },
-      body: JSON.stringify(newTask)
-    };
-
     try {
-      const response = await fetch(API_URL + '/tasks', options);
-      if (!response.ok) {
-        taskService.updateToken();
-      }
+      await axios.post(API_URL + '/tasks', newTask, getJWTHeader());
       getTasks();
       resetFlashes();
       setAddShow(true);
@@ -74,21 +73,10 @@ const Home = () => {
   }
 
   const changeTaskState = async id => {
-    const task = tasks.filter(task => task.id === id)[0];
+    const task = tasks.find(task => task.id === id);
     task.completed = !task.completed;
-    const options = {
-      method: 'PATCH',
-      headers: {
-        'Authorization': getJWT()
-      },
-      body: JSON.stringify(task)
-    };
-
     try {
-      const response = await fetch(API_URL + `/tasks/${id}/`, options);
-      if (!response.ok) {
-        taskService.updateToken();
-      }
+      await axios.patch(API_URL + `/tasks/${id}`, task, getJWTHeader());
       getTasks();
     } catch (error) {
       console.log(error)
@@ -96,22 +84,10 @@ const Home = () => {
   }
 
   const editTask = async task => {
-    const options = {
-      method: 'PATCH',
-      headers: {
-        'Authorization': getJWT()
-      },
-      body: JSON.stringify(task)
-    };
-
     try {
-      const response = await fetch(API_URL + `/tasks/${task.id}/`, options);
-      if (!response.ok) {
-        taskService.updateToken();
-      } else {
-        resetFlashes();
-        setEditShow(true);
-      }
+      await axios.patch(API_URL + `/tasks/${task.id}`, task, getJWTHeader());
+      resetFlashes();
+      setEditShow(true);
       getTasks();
     } catch (error) {
       console.log(error)
@@ -119,26 +95,15 @@ const Home = () => {
   }
 
   const deleteTask = async id => {
-    const options = {
-      method: 'DELETE',
-      headers: {
-        'Authorization': getJWT()
-      }
-    };
-
     try {
-      const response = await fetch(API_URL + `/tasks/${id}/`, options);
-      if (!response.ok) {
-        taskService.updateToken();
-      } else {
-        resetFlashes();
-        setDelShow(true);
-      }
+      await axios.delete(API_URL + `/tasks/${id}`, getJWTHeader());
+      resetFlashes();
+      setDelShow(true);
       getTasks();
     } catch (error) {
       console.log(error)
     }
-  }
+  };
 
   return (
     <div className='wrapper'>
