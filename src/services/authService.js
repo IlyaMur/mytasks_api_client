@@ -35,7 +35,7 @@ const logout = async () => {
   localStorage.removeItem("user");
 
   await fetch(API_URL + '/logout', {
-    method: 'POST',
+    method: 'DELETE',
     body: JSON.stringify({
       refreshToken: user.refreshToken
     })

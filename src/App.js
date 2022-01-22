@@ -42,8 +42,13 @@ function App() {
           <div className="navbar-nav mr-auto">
             <li className="nav-item">
               <Link to={"/"} className="nav-link">
-                MyTasks
+                <strong> MyTasks</strong>
               </Link>
+            </li>
+            <li className="nav-item">
+              <a href="https://github.com/ilyamur/my_tasks" className="nav-link">
+                GitHub
+              </a>
             </li>
           </div>
 
