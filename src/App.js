@@ -24,7 +24,7 @@ function App() {
 
   const logOut = () => {
     AuthService.logout();
-    window.location.reload();
+    setIsAuth(false);
   };
 
   const PrivateRoute = ({ auth: { isAuthenticated }, children }) => {
