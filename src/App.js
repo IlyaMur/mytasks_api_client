@@ -46,7 +46,7 @@ function App() {
               </Link>
             </li>
             <li className="nav-item">
-              <a href="https://github.com/ilyamur/my_tasks" className="nav-link">
+              <a href="https://github.com/ilyamur/mytasks_app" className="nav-link">
                 GitHub
               </a>
             </li>
