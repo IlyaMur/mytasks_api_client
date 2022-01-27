@@ -96,7 +96,7 @@ function App() {
             <Col md="8">
               <Card>
                 <Routes>
-                  <Route path="/" element={<PrivateRoute auth={{ isAuthenticated: isAuth }} > <Home logOut={logOut} /> </PrivateRoute>}
+                  <Route path="/" element={<PrivateRoute auth={{ isAuthenticated: isAuth }} > <Home /> </PrivateRoute>}
                   />
                   <Route path="/home" element={<PrivateRoute auth={{ isAuthenticated: isAuth }} > <Home /> </PrivateRoute>}
                   />

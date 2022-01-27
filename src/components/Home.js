@@ -9,7 +9,7 @@ import axios from 'axios';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import { API_URL } from '../apiConfig';
 
-const Home = (logOut) => {
+const Home = () => {
   const [tasks, setTasks] = useState([])
   const [errors, setErrors] = useState([])
   const [addShow, setAddShow] = useState(false);
