@@ -12,20 +12,26 @@ function App() {
   const [isAuth, setIsAuth] = useState(false);
   const [username, setUsername] = useState('');
 
-  useEffect(() => {
-    const user = AuthService.getCurrentUser();
-
-    if (user) {
-      setIsAuth(true);
-      const decodedJWT = jwt_decode(user.accessToken)
-      setUsername(decodedJWT.name);
-    }
-  }, []);
-
   const logOut = () => {
     AuthService.logout();
     setIsAuth(false);
   };
+
+  useEffect(() => {
+    const user = AuthService.getCurrentUser();
+
+    if (user) {
+      if (AuthService.isJWTExpired()) {
+        console.log('Refresh Token expired');
+        logOut();
+        return;
+      }
+
+      setIsAuth(true);
+      const decodedAccessToken = jwt_decode(user.accessToken);
+      setUsername(decodedAccessToken.name);
+    }
+  }, []);
 
   const PrivateRoute = ({ auth: { isAuthenticated }, children }) => {
     return isAuthenticated ? children : <Navigate to="/login" />;
@@ -90,7 +96,7 @@ function App() {
             <Col md="8">
               <Card>
                 <Routes>
-                  <Route path="/" element={<PrivateRoute auth={{ isAuthenticated: isAuth }} > <Home /> </PrivateRoute>}
+                  <Route path="/" element={<PrivateRoute auth={{ isAuthenticated: isAuth }} > <Home logOut={logOut} /> </PrivateRoute>}
                   />
                   <Route path="/home" element={<PrivateRoute auth={{ isAuthenticated: isAuth }} > <Home /> </PrivateRoute>}
                   />

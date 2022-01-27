@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { API_URL } from '../apiConfig';
+import AuthService from "../services/authService";
+import jwt_decode from "jwt-decode";
 
 const signup = async (email, username, password) => {
   const response = await fetch(API_URL + "/signup", {
@@ -64,12 +66,20 @@ const refreshAuthLogic = async (failedRequest) => {
   }
 }
 
+const isJWTExpired = () => {
+  const user = AuthService.getCurrentUser();
+  const decodedRefreshToken = jwt_decode(user.refreshToken);
+
+  return decodedRefreshToken.exp * 1000 < Date.now();
+}
+
 const authService = {
   signup,
   login,
   logout,
   getCurrentUser,
-  refreshAuthLogic
+  refreshAuthLogic,
+  isJWTExpired
 };
 
 export default authService;

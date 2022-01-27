@@ -9,7 +9,7 @@ import axios from 'axios';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import { API_URL } from '../apiConfig';
 
-const Home = () => {
+const Home = (logOut) => {
   const [tasks, setTasks] = useState([])
   const [errors, setErrors] = useState([])
   const [addShow, setAddShow] = useState(false);
@@ -28,7 +28,8 @@ const Home = () => {
   const getTasks = async () => {
     try {
       const response = await axios.get(API_URL + '/tasks', getJWTHeader());
-      const tasks = response.data
+      const tasks = response.data;
+
       setTasks(tasks);
       setShowSpinner(false);
     } catch (error) {
