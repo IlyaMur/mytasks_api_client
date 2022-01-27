@@ -23,7 +23,6 @@ const Login = ({ setUsername, setIsAuth }) => {
     const response = await AuthService.login(email, password);
     const json = await response.text();
     const data = JSON.parse(json);
-    setUsername('43!');
 
     if (!response.ok) {
       setErrors(data);
